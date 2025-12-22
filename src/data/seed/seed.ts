@@ -52,4 +52,6 @@ async function main() {
         })
     )
 
+    console.log('SEED DONE!');
+
 }
