@@ -1,12 +1,14 @@
 import { Request, Response } from "express";
-import { CustomError, LoginUserDto, RegisterUserDto } from "../../domain";
+import { CreateCategoryDto, CustomError, LoginUserDto, PaginationDto, RegisterUserDto } from "../../domain";
 import { AuthService } from "../services/auth.service";
+import { CategoryService } from "../services/category.service";
 
 
 
 export class CategoryContoller {
 
     constructor (
+        private readonly categoryService: CategoryService
     ) {}
 
     private handleError = (error: unknown, res: Response) => {
@@ -21,14 +23,26 @@ export class CategoryContoller {
 
     createcategory = async(req: Request, res: Response) => {
 
-        res.json('create category')
+        const [error, createCategoryDto] = CreateCategoryDto.create(req.body);
 
+        if (error) throw res.status(400).json({error});
+
+        this.categoryService.createCategory(createCategoryDto!, req.body.user)
+            .then(category => res.status(201).json(category))
+            .catch(error => this.handleError(error, res))
 
     }
 
     getCategories = async(req: Request, res: Response) => {
 
-        res.json('get categories')
+        
+        const { page = 1, limit = 10 } = req.query;
+        const [ error, paginationDto ] = PaginationDto.create(+page, +limit);
+        
+        
+        this.categoryService.getCategories(paginationDto!)
+            .then(categories => res.json(categories))
+            .catch(error => this.handleError(error, res))
 
 
     }
