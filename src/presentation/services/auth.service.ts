@@ -115,4 +115,14 @@ export class AuthService {
     }
 
 
+    async getUsers() {
+        try {
+            const users = await UserModel.find();
+            return users;
+        } catch (error) {
+            throw CustomError.internalServer(`${error}`)
+        }
+    }
+
+
 }

@@ -54,5 +54,11 @@ export class AuthContoller {
 
     }
 
+    getUsers = (req: Request, res: Response) => {
+        this.authService.getUsers()
+            .then(users => res.json(users))
+            .catch(error => this.handleError(error, res))
+    }
+
 
 }
